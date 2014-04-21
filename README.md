@@ -1,0 +1,4 @@
+httpadapter
+===========
+
+Simple HTTP Adapter
