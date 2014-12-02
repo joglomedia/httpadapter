@@ -1,5 +1,4 @@
 <?php
-
 namespace HttpAdapter;
 
 use HttpAdapter\HttpAdapterInterface;
@@ -13,7 +12,7 @@ class Restful
 		$this->setAdapter( $adapter );
 	}
 	
-    /**
+	/**
      * Set the adapter to use. The cURL adapter will be used by default.
      *
      * @param HttpAdapterInterface $adapter The HttpAdapter to use (optional).
