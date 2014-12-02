@@ -13,14 +13,14 @@ class Restful
 	}
 	
 	/**
-     * Set the adapter to use. The cURL adapter will be used by default.
-     *
-     * @param HttpAdapterInterface $adapter The HttpAdapter to use (optional).
-     */
-    public function setAdapter( HttpAdapterInterface $adapter = null )
-    {
+	 * Set the adapter to use. The cURL adapter will be used by default.
+	 *
+	 * @param HttpAdapterInterface $adapter The HttpAdapter to use (optional).
+	 */
+	public function setAdapter( HttpAdapterInterface $adapter = null )
+	{
         $this->adapter = ( $adapter ) ?: new CurlHttpAdapter();
-    }
+	}
 	
 	/**
 	 * Restful API method helper, send GET request
