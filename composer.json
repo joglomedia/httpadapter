@@ -23,11 +23,16 @@
         "ext-curl" : "*"
     },
     "require-dev": {
-    	"phpunit/phpunit": "4.5.*"
+    	"phpunit/phpunit": ">=4.5.*"
     },
     "suggest": {
     },
     "autoload": {
         "psr-0": { "HttpAdapter": "src/" }
+    },
+	"extra": {
+        "branch-alias": {
+            "dev-master": "0.2.0-dev"
+        }
     }
 }
