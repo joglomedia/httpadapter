@@ -19,7 +19,7 @@ class CurlHttpAdapter implements HttpAdapterInterface
 	/**
 	 * The adapter version.
 	 */
-	const VERSION = '0.1.0';
+	const VERSION = '0.2.0';
 	
 	/**
 	 * The adapter config.
@@ -42,11 +42,11 @@ class CurlHttpAdapter implements HttpAdapterInterface
 	 * @param array $config, the adapter configuration to use for this request.
 	 * @return void
 	 */
-	public function __construct( $config = array() ) 
+	public function __construct($config = array()) 
 	{
 		$this->setConfig($config);
 		$this->setRequestSetting();
-		$this->setRequestUseragent();
+		$this->setRequestUserAgent();
 	}
 
 	/**
@@ -159,9 +159,9 @@ class CurlHttpAdapter implements HttpAdapterInterface
 	 *
 	 * @return void value is stored to the config array class variable.
 	 */
-	protected function setRequestUseragent() 
+	protected function setRequestUserAgent() 
 	{
-		if ( ! empty($this->config['curl_useragent'] ) )
+		if (! empty($this->config['curl_useragent']))
 			return;
 
 		$ssl = ($this->config['curl_ssl_verifyhost'] && $this->config['curl_ssl_verifypeer'] && $this->config['use_ssl']) ? '+' : '-';
@@ -221,7 +221,7 @@ class CurlHttpAdapter implements HttpAdapterInterface
 	 * @param array $params the parameters for the request
 	 * @return void prepared values are stored in the class array variable '$this->requestSetting'
 	 */
-	protected function setRequestParams( $encode = false ) 
+	protected function setRequestParams($encode = false) 
 	{
 		if (!is_array($this->requestSetting['params']) || empty($this->requestSetting['params']))
 			return;
@@ -352,7 +352,7 @@ class CurlHttpAdapter implements HttpAdapterInterface
 	 * @return string $text transformed by the given $mode
 	 */
 	public function transformText($text, $mode='encode') {
-		$mode = ucfirst( $mode );
+		$mode = ucfirst($mode);
 		return $this->{"safe$mode"}($text);
 	}
 	
@@ -370,12 +370,12 @@ class CurlHttpAdapter implements HttpAdapterInterface
 	 */
 	public function createRequest($method='GET', $url='', $params=array(), $headers=array(), $useauth=false, $multipart=false) 
 	{
-		$params		= is_array($params) ? $params : array( $params );
-		$headers	= is_array($headers) ? $headers : array( $headers );
+		$params		= is_array($params) ? $params : array($params);
+		$headers	= is_array($headers) ? $headers : array($headers);
 
 		// Set default http request settings.
 		$settings = array(
-			'method'    => strtoupper( $method ),
+			'method'    => strtoupper($method),
 			'url'       => $url,
 			'params'    => $params,
 			'multipart' => $multipart,
@@ -407,7 +407,7 @@ class CurlHttpAdapter implements HttpAdapterInterface
 		);
 		
 		// Check curl function.
-		if ( ! function_exists('curl_init') || ! extension_loaded('curl') ) {
+		if (! function_exists('curl_init') || ! extension_loaded('curl')) {
 			$this->response['code'] = 0;
 			$this->response['error'] = 'Curl module not loaded.';
 			$this->response['errno'] = 2;
@@ -424,7 +424,7 @@ class CurlHttpAdapter implements HttpAdapterInterface
 		}
 
 		// Set request method.
-		switch ( $this->requestSetting['method'] ) 
+		switch ($this->requestSetting['method']) 
 		{
 			case 'GET':
 				if (isset($this->requestSetting['querystring'])) {
@@ -452,16 +452,16 @@ class CurlHttpAdapter implements HttpAdapterInterface
 		}
 		
 		// Set basic HTTP Auth.
-		if ( $this->config['curl_http_auth'] ) {
-			curl_setopt( $ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC );
-			curl_setopt( $ch, CURLOPT_USERPWD, $this->config['curl_http_auth'] );
+		if ($this->config['curl_http_auth']) {
+			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+			curl_setopt($ch, CURLOPT_USERPWD, $this->config['curl_http_auth']);
 		}
 
 		// Process the headers.
-		if ( $this->config['curl_header'] ) {
-			curl_setopt( $ch, CURLOPT_HEADERFUNCTION, array( $this, 'getHeader' ) );
-			curl_setopt( $ch, CURLOPT_HEADER, $this->config['curl_header'] ); // default = false.
-			curl_setopt( $ch, CURLINFO_HEADER_OUT, true );
+		if ($this->config['curl_header']) {
+			curl_setopt($ch, CURLOPT_HEADERFUNCTION, array($this, 'getHeader'));
+			curl_setopt($ch, CURLOPT_HEADER, $this->config['curl_header']); // default = false.
+			curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 		}
 
 		// Set curl options.
@@ -479,7 +479,7 @@ class CurlHttpAdapter implements HttpAdapterInterface
 		));
 		
 		// Set request header.
-		if ( ! empty($this->requestSetting['headers']) ) {
+		if (! empty($this->requestSetting['headers'])) {
 			foreach ($this->requestSetting['headers'] as $k => $v) {
 				$headers[] = trim($k . ': ' . $v);
 			}
@@ -487,20 +487,20 @@ class CurlHttpAdapter implements HttpAdapterInterface
 		}
 		
 		// Set cookie.
-		if ( $this->config['use_cookie'] ) {
-			if ( ! empty( $this->config['curl_cookie'] ) )
+		if ($this->config['use_cookie']) {
+			if (! empty($this->config['curl_cookie']))
 				curl_setopt($ch, CURLOPT_COOKIE, $this->config['curl_cookie']);
 			
-			if ( ! empty( $this->config['curl_cookiefile'] ) )
+			if (! empty($this->config['curl_cookiefile']))
 				curl_setopt($ch, CURLOPT_COOKIEFILE, $this->config['curl_cookiefile']);
 		}
 
 		// Save cookie.
-		if ( $this->config['save_cookie'] )
+		if ($this->config['save_cookie'])
 			curl_setopt($ch, CURLOPT_COOKIEJAR, $this->config['curl_cookiejar']);
 		
 		// Set referer.
-		if ( ! empty( $this->config['curl_referer'] ) ) {
+		if (! empty($this->config['curl_referer'])) {
 			curl_setopt($ch, CURLOPT_REFERER, $this->config['curl_referer']);
 		} 
 		else {
@@ -508,32 +508,32 @@ class CurlHttpAdapter implements HttpAdapterInterface
 		}
 
 		// Verify SSL secure connection.
-		if( $this->config['use_ssl'] ) {
-			if( $this->config['curl_ssl_verifypeer'] ) {
-				curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, $this->config['curl_ssl_verifypeer'] );
-				curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, $this->config['curl_ssl_verifyhost'] );
+		if($this->config['use_ssl']) {
+			if($this->config['curl_ssl_verifypeer']) {
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $this->config['curl_ssl_verifypeer']);
+				curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $this->config['curl_ssl_verifyhost']);
 
-				if ( $this->config['curl_cainfo'] ) {
-					curl_setopt( $ch, CURLOPT_CAINFO, $this->config['curl_cainfo'] );
+				if ($this->config['curl_cainfo']) {
+					curl_setopt($ch, CURLOPT_CAINFO, $this->config['curl_cainfo']);
 				}
 
-				if ( $this->config['curl_capath'] ) {
-					curl_setopt( $ch, CURLOPT_CAPATH, $this->config['curl_capath'] );
+				if ($this->config['curl_capath']) {
+					curl_setopt($ch, CURLOPT_CAPATH, $this->config['curl_capath']);
 				}
 			}
 			else {
-				curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0 );
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 			}
 		}
 
 		// Set proxy authentication.
-		if ( $this->config['curl_proxyuserpwd'] ) {
-			curl_setopt( $ch, CURLOPT_PROXYUSERPWD, $this->config['curl_proxyuserpwd'] );
+		if ($this->config['curl_proxyuserpwd']) {
+			curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->config['curl_proxyuserpwd']);
 		}
 			
 		// Set alternative port to connect.
-		if ( ( $this->config['port'] != '' && $this->config['port'] > 0 ) ) {
-			curl_setopt( $ch, CURLOPT_PORT, $this->config['port'] );
+		if (($this->config['port'] != '' && $this->config['port'] > 0)) {
+			curl_setopt($ch, CURLOPT_PORT, $this->config['port']);
 		}
 	
 	    // Process Curl request.
@@ -573,10 +573,10 @@ class CurlHttpAdapter implements HttpAdapterInterface
 		$key = trim($key);
 		$value = trim($value);
 
-		if ( ! isset( $this->response['headers'][$key] ) ) {
+		if (! isset($this->response['headers'][$key])) {
 			$this->response['headers'][$key] = $value;
 		} else {
-			if ( !is_array( $this->response['headers'][$key] ) ) {
+			if (!is_array($this->response['headers'][$key])) {
 				$this->response['headers'][$key] = array($this->response['headers'][$key]);
 			}
 			$this->response['headers'][$key][] = $value;
@@ -593,22 +593,22 @@ class CurlHttpAdapter implements HttpAdapterInterface
 	 * @param string $headerstring
 	 * @return string $cookies
 	 **/
-	public function getCookie( $headerstring = '' ) 
+	public function getCookie($headerstring = '') 
 	{	
-		if ( function_exists('http_parse_headers') ) {
-			$headers = http_parse_headers( $headerstring );
+		if (function_exists('http_parse_headers')) {
+			$headers = http_parse_headers($headerstring);
 
 			$_cookies = array();
-			foreach ( $headers as $key => $header ) {
-				if ( strtolower($key) == 'set-cookie' ) {
-					foreach ( $header as $k => $value ) {
+			foreach ($headers as $key => $header) {
+				if (strtolower($key) == 'set-cookie') {
+					foreach ($header as $k => $value) {
 						$_cookies[] = http_parse_cookie($value);
 					}
 				}
 			}
 
 			$__cookies = array();
-			foreach ( $_cookies as $row ) {
+			foreach ($_cookies as $row) {
 				$__cookies[] = $row->cookies;
 			}
 
@@ -624,22 +624,22 @@ class CurlHttpAdapter implements HttpAdapterInterface
 		} 
 		else {
 			//preg_match_all("#Set-Cookie: ([^;\s]+)($|;)#", $headerstring, $matches);
-			preg_match_all( "#^Set-Cookie: (.*?);#sm", $headerstring, $matches );
+			preg_match_all("#^Set-Cookie: (.*?);#sm", $headerstring, $matches);
 			
 			$cookies = '';
-			foreach ( $matches[1] as $cookie ) {
-				if ( $cookie{0} == '=' )
+			foreach ($matches[1] as $cookie) {
+				if ($cookie{0} == '=')
 					continue;
 				
 				// Skip over "expired cookies which were causing problems; by Neerav; 4 Apr 2006
-				if ( ( strpos($cookie, "EXPIRED") !== false ) || ( strpos( $cookie, "GoogleAccountsLocale_session" ) !== false ) ) 
+				if ((strpos($cookie, "EXPIRED") !== false) || (strpos($cookie, "GoogleAccountsLocale_session") !== false)) 
 					continue;
 		
 				$cookies .= $cookie . "; ";
 			}
 			
 			$cookies = substr($cookies, 0, -1);
-			if ( empty( $cookies ) )
+			if (empty($cookies))
 				return false;
 			
 			return $cookies;
@@ -649,9 +649,9 @@ class CurlHttpAdapter implements HttpAdapterInterface
 	/**
 	 * Restful API method helper, send GET request
 	 */
-	public function get( $url, $params = array(), $headers = array() )
+	public function get($url, $params = array(), $headers = array())
 	{
-		$response = $this->createRequest( 'GET', $url, $params, $headers );
+		$response = $this->createRequest('GET', $url, $params, $headers);
 		
 		return $response['body'];
 	}
@@ -659,33 +659,33 @@ class CurlHttpAdapter implements HttpAdapterInterface
 	/**
 	 * Restful API method helper, send POST request
 	 */
-	public function post( $url, $params = array(), $headers = array() )
+	public function post($url, $params = array(), $headers = array())
 	{
-		return $this->createRequest( 'POST', $url, $params, $headers );
+		return $this->createRequest('POST', $url, $params, $headers);
 	}
 	
 	/**
 	 * Restful API method helper, send UPDATE request
 	 */
-	public function update( $url, $params = array(), $headers = array() )
+	public function update($url, $params = array(), $headers = array())
 	{
-		return $this->createRequest( 'UPDATE', $url, $params, $headers );
+		return $this->createRequest('UPDATE', $url, $params, $headers);
 	}
 
 	/**
 	 * Restful API method helper, send DELETE request
 	 */
-	public function delete( $url, $params = array(), $headers = array() )
+	public function delete($url, $params = array(), $headers = array())
 	{
-		return $this->createRequest( 'DELETE', $url, $params, $headers );
+		return $this->createRequest('DELETE', $url, $params, $headers);
 	}
 	
 	/**
 	 * Restful API method helper, send PUT request
 	 */
-	public function put( $url, $params = null, $headers = null )
+	public function put($url, $params = null, $headers = null)
 	{
-		return $this->createRequest( 'PUT', $url, $params, $headers );
+		return $this->createRequest('PUT', $url, $params, $headers);
 	}
 	
 	/**

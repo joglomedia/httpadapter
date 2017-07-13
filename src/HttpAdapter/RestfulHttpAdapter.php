@@ -2,6 +2,7 @@
 namespace HttpAdapter;
 
 use HttpAdapter\HttpAdapterInterface;
+use HttpAdapter\CurlHttpAdapter;
 
 class Restful 
 {
